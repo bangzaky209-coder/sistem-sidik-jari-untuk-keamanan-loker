@@ -1,0 +1,245 @@
+:root {
+  --bg: #0f172a;
+  --card: #1e293b;
+  --line: #334155;
+  --text: #e2e8f0;
+  --muted: #94a3b8;
+  --green: #22c55e;
+  --red: #ef4444;
+  --amber: #f59e0b;
+  --blue: #3b82f6;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, "Segoe UI", Roboto, sans-serif;
+  padding: 16px;
+}
+header {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  justify-content: space-between; align-items: center;
+  margin-bottom: 16px;
+}
+h1 { margin: 0; font-size: 1.4rem; letter-spacing: 1px; }
+h1 span { font-size: .8rem; color: var(--muted); font-weight: 400; letter-spacing: 0; margin-left: 8px; }
+h2 { margin: 0 0 12px; font-size: 1.05rem; }
+h3 { margin: 18px 0 6px; font-size: .9rem; color: var(--muted); }
+.mute { font-size: .85rem; color: var(--muted); cursor: pointer; }
+
+main {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 16px;
+}
+.hint { font-size: .8rem; color: var(--muted); margin: 0 0 8px; }
+
+/* ---------- LOKER + PINTU ---------- */
+.locker-wrap { display: flex; gap: 16px; align-items: center; justify-content: center; margin-bottom: 14px; }
+.locker {
+  position: relative;
+  width: 170px; height: 210px;
+  perspective: 700px;
+  background: #0b1220;
+  border: 6px solid #475569;
+  border-radius: 8px;
+}
+.inside {
+  position: absolute; inset: 0;
+  display: flex; align-items: flex-end; justify-content: center;
+  background: linear-gradient(#111827, #020617);
+}
+.box { font-size: 3rem; margin-bottom: 10px; }
+.door {
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, #64748b, #475569);
+  border-right: 3px solid #334155;
+  transform-origin: left center;
+  transition: transform 1s cubic-bezier(.4, 0, .2, 1), background .4s;
+  display: flex; align-items: center; justify-content: flex-end;
+  padding-right: 12px;
+}
+.door .handle { width: 8px; height: 50px; background: #cbd5e1; border-radius: 4px; }
+.door .lock-icon { position: absolute; top: 12px; left: 12px; font-size: 1.3rem; }
+.locker.open .door { transform: rotateY(-105deg); background: linear-gradient(135deg, #16a34a, #166534); }
+
+.servo { text-align: center; }
+.servo-body {
+  width: 80px; height: 60px; background: #0ea5e9; border-radius: 6px;
+  position: relative; margin: 0 auto 6px;
+  border: 2px solid #0369a1;
+}
+.servo-arm {
+  position: absolute; left: 50%; top: 50%;
+  width: 4px; height: 44px;
+  background: #fff; border-radius: 3px;
+  transform-origin: 50% 0;
+  transform: rotate(0deg);   /* diatur oleh JS */
+  transition: transform 1s ease;
+}
+.servo-arm::before {
+  content: ""; position: absolute; left: -4px; top: -4px;
+  width: 12px; height: 12px; border-radius: 50%; background: #fff;
+}
+.servo-label { font-size: .8rem; color: var(--muted); }
+
+/* ---------- LCD ---------- */
+.lcd {
+  background: #86efac;
+  color: #052e16;
+  font-family: "Courier New", monospace;
+  font-weight: 700;
+  font-size: 1.25rem;
+  letter-spacing: 2px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 4px solid #14532d;
+  width: fit-content;
+  margin: 0 auto 14px;
+  box-shadow: inset 0 0 12px rgba(0,0,0,.35);
+}
+.lcd div { white-space: pre; min-height: 1.5em; }
+
+/* ---------- INDIKATOR ---------- */
+.indicators { display: flex; justify-content: space-around; gap: 8px; margin-bottom: 12px; }
+.ind { display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: .75rem; color: var(--muted); text-align: center; }
+.led { width: 34px; height: 34px; border-radius: 50%; border: 3px solid #0006; transition: all .15s; }
+.led.green { background: #14532d; }
+.led.red   { background: #7f1d1d; }
+.led.green.on { background: var(--green); box-shadow: 0 0 22px 8px rgba(34,197,94,.7); }
+.led.red.on   { background: var(--red);   box-shadow: 0 0 22px 8px rgba(239,68,68,.7); }
+
+.buzzer {
+  position: relative; width: 34px; height: 34px; border-radius: 50%;
+  background: #334155; display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; transition: background .15s;
+}
+.buzzer i {
+  position: absolute; inset: 0; border: 2px solid var(--amber); border-radius: 50%;
+  opacity: 0;
+}
+.buzzer.on { background: var(--amber); animation: shake .08s infinite; }
+.buzzer.on i { animation: wave .6s infinite; }
+.buzzer.on i:nth-child(2) { animation-delay: .2s; }
+.buzzer.on i:nth-child(3) { animation-delay: .4s; }
+@keyframes wave { 0% { transform: scale(1); opacity: .9; } 100% { transform: scale(2.3); opacity: 0; } }
+@keyframes shake { 0% { transform: translateX(-1px); } 100% { transform: translateX(1px); } }
+
+.status-row { text-align: center; font-size: .85rem; color: var(--muted); }
+.locked { color: var(--red); }
+.opened { color: var(--green); }
+
+/* ---------- KONTROL ---------- */
+.fingers { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.finger-opt {
+  padding: 6px 10px; border-radius: 999px; font-size: .8rem; cursor: pointer;
+  background: #0f172a; border: 1px solid var(--line); color: var(--text);
+}
+.finger-opt.active { background: var(--blue); border-color: var(--blue); }
+
+.sensor {
+  width: 100%; padding: 18px; border-radius: 12px; border: 2px dashed var(--blue);
+  background: #0f172a; color: var(--text); cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  user-select: none; touch-action: none; transition: all .15s;
+}
+.sensor .fp { font-size: 2.2rem; }
+.sensor.down { background: var(--blue); border-style: solid; transform: scale(.98); }
+
+.btn {
+  background: var(--blue); color: #fff; border: 0; border-radius: 8px;
+  padding: 9px 14px; cursor: pointer; font-size: .9rem;
+}
+.btn:hover { filter: brightness(1.1); }
+.btn.small { padding: 6px 10px; font-size: .8rem; }
+.btn.danger { background: #b91c1c; }
+#lockBtn { width: 100%; background: #475569; }
+#lockBtn:active { background: var(--amber); }
+
+.enrolled { list-style: none; padding: 0; margin: 0; font-size: .85rem; }
+.enrolled li { padding: 6px 8px; border-bottom: 1px solid var(--line); }
+.enrolled li.empty { color: var(--muted); border: 0; }
+.enrolled b { color: var(--green); }
+
+/* ---------- SERIAL ---------- */
+.serial {
+  background: #020617; color: #4ade80;
+  font-family: "Courier New", monospace; font-size: .8rem;
+  height: 320px; overflow-y: auto; padding: 10px; border-radius: 8px;
+  white-space: pre-wrap; border: 1px solid var(--line);
+}
+.serial .tx { color: #fbbf24; }
+#serialForm { display: flex; gap: 6px; margin-top: 8px; }
+#serialInput {
+  flex: 1; padding: 9px; border-radius: 8px; border: 1px solid var(--line);
+  background: #0f172a; color: var(--text); min-width: 0;
+}
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.chip {
+  background: #0f172a; border: 1px solid var(--line); color: var(--muted);
+  border-radius: 999px; padding: 4px 10px; font-size: .75rem; cursor: pointer;
+}
+.chip:hover { color: var(--text); border-color: var(--blue); }
+
+/* ---------- RIWAYAT ---------- */
+.hist-head { display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.table-wrap { max-height: 320px; overflow: auto; }
+table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th { position: sticky; top: 0; background: var(--card); color: var(--muted); }
+td:nth-child(4) { white-space: normal; }
+.badge { padding: 2px 8px; border-radius: 999px; font-size: .75rem; font-weight: 600; }
+.badge.ok   { background: rgba(34,197,94,.2);  color: var(--green); }
+.badge.fail { background: rgba(239,68,68,.2);  color: var(--red); }
+.badge.info { background: rgba(59,130,246,.2); color: #93c5fd; }
+.empty-hist { text-align: center; color: var(--muted); padding: 16px; }
+
+/* ---------- KONEKSI ARDUINO ---------- */
+.conn { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.mode-badge {
+  padding: 5px 12px; border-radius: 999px; font-size: .75rem; font-weight: 700;
+  background: rgba(245,158,11,.2); color: var(--amber);
+}
+body[data-mode="arduino"] .mode-badge { background: rgba(34,197,94,.2); color: var(--green); }
+body[data-mode="arduino"] #connectBtn { background: #b91c1c; }
+body[data-mode="arduino"] .sim-only { display: none; }
+body[data-mode="sim"] .arduino-only { display: none; }
+.hint-box {
+  margin-top: 14px; padding: 10px; border-radius: 8px; font-size: .85rem;
+  background: rgba(34,197,94,.12); color: #86efac; border: 1px solid rgba(34,197,94,.3);
+}
+
+/* ---------- PENDAFTARAN ---------- */
+.reg-form { display: flex; gap: 8px; align-items: flex-end; margin-bottom: 10px; }
+.reg-form label { font-size: .8rem; color: var(--muted); display: flex; flex-direction: column; gap: 4px; }
+.reg-form input {
+  width: 90px; padding: 9px; border-radius: 8px; border: 1px solid var(--line);
+  background: #0f172a; color: var(--text);
+}
+.steps { list-style: none; counter-reset: s; padding: 0; margin: 0 0 8px; font-size: .85rem; }
+.steps li {
+  counter-increment: s; padding: 6px 8px 6px 34px; position: relative; color: var(--muted);
+}
+.steps li::before {
+  content: counter(s); position: absolute; left: 6px; top: 5px;
+  width: 20px; height: 20px; border-radius: 50%; background: #334155; color: #fff;
+  font-size: .75rem; display: flex; align-items: center; justify-content: center;
+}
+.steps li.active { color: var(--text); font-weight: 600; }
+.steps li.active::before { background: var(--blue); animation: pulse 1s infinite; }
+.steps li.done { color: var(--green); }
+.steps li.done::before { content: "✓"; background: var(--green); }
+.steps li.error { color: var(--red); }
+.steps li.error::before { background: var(--red); }
+@keyframes pulse { 50% { box-shadow: 0 0 0 5px rgba(59,130,246,.3); } }
+.reg-msg { font-size: .85rem; color: var(--muted); min-height: 1.2em; }
+.reg-msg.ok { color: var(--green); }
+.reg-msg.fail { color: var(--red); }

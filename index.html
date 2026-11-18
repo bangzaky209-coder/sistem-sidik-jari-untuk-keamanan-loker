@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Smart Locker Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-mode="sim">
+  <header>
+    <h1>SMART LOCKER <span>Dashboard Fingerprint FPM10A + Servo</span></h1>
+    <div class="conn">
+      <span class="mode-badge" id="modeBadge">MODE SIMULASI</span>
+      <button class="btn" id="connectBtn">🔌 Hubungkan Arduino</button>
+      <label class="mute"><input type="checkbox" id="muteBox"> Matikan suara</label>
+    </div>
+  </header>
+
+  <main>
+    <!-- KOLOM 1: PERANGKAT -->
+    <section class="card">
+      <h2>Perangkat</h2>
+
+      <div class="locker-wrap">
+        <div class="locker" id="locker">
+          <div class="inside"><div class="box">🎒</div></div>
+          <div class="door" id="door">
+            <div class="handle"></div>
+            <div class="lock-icon" id="lockIcon">🔒</div>
+          </div>
+        </div>
+        <div class="servo">
+          <div class="servo-body"><div class="servo-arm" id="servoArm"></div></div>
+          <div class="servo-label">Servo: <b id="servoAngle">90</b>°</div>
+        </div>
+      </div>
+
+      <div class="lcd" id="lcd">
+        <div id="lcdLine0"></div>
+        <div id="lcdLine1"></div>
+      </div>
+
+      <div class="indicators">
+        <div class="ind"><div class="led green" id="ledGreen"></div><span>LED Hijau (pin 8)</span></div>
+        <div class="ind"><div class="led red" id="ledRed"></div><span>LED Merah (pin 9)</span></div>
+        <div class="ind"><div class="buzzer" id="buzzer"><i></i><i></i><i></i>🔔</div><span>Buzzer (pin 10)</span></div>
+      </div>
+
+      <div class="status-row">
+        Status pintu: <b id="statusText" class="locked">TERKUNCI</b>
+        &nbsp;|&nbsp; Sensor: <b id="sensorText">Siap</b>
+      </div>
+    </section>
+
+    <!-- KOLOM 2: KONTROL -->
+    <section class="card">
+      <h2>Kontrol</h2>
+
+      <h3>Pendaftaran Sidik Jari</h3>
+      <form id="regForm" class="reg-form" autocomplete="off">
+        <label>ID (1–127)
+          <input type="number" id="regId" min="1" max="127" value="1">
+        </label>
+        <button class="btn" type="submit" id="regBtn">Daftarkan Sidik Jari</button>
+      </form>
+      <ol class="steps" id="regSteps">
+        <li data-step="1">Tempelkan jari (pemindaian 1)</li>
+        <li data-step="2">Angkat jari</li>
+        <li data-step="3">Tempelkan jari yang sama (pemindaian 2)</li>
+        <li data-step="4">Sidik jari tersimpan</li>
+      </ol>
+      <div class="reg-msg" id="regMsg">Isi ID lalu tekan “Daftarkan Sidik Jari”.</div>
+
+      <div class="sim-only">
+        <h3>Sensor Virtual (mode simulasi)</h3>
+        <p class="hint">Pilih jari, lalu <b>tekan &amp; tahan</b> tombol sensor (lepas = angkat jari).</p>
+        <div class="fingers" id="fingers"></div>
+        <button class="sensor" id="sensorBtn">
+          <span class="fp">☝</span>
+          <span id="sensorLabel">Tempelkan Jari</span>
+        </button>
+      </div>
+
+      <div class="arduino-only hint-box">
+        Mode Arduino: tempelkan jari Anda langsung ke sensor fingerprint di rangkaian.
+      </div>
+
+      <h3>Tombol Kunci</h3>
+      <button class="btn" id="lockBtn">Kunci Loker (tombol pin 7 / kirim LOCK)</button>
+
+      <h3>Jari Terdaftar</h3>
+      <ul class="enrolled" id="enrolled"><li class="empty">Belum ada jari terdaftar</li></ul>
+    </section>
+
+    <!-- KOLOM 3: SERIAL -->
+    <section class="card">
+      <h2>Serial Monitor</h2>
+      <div class="serial" id="serial"></div>
+      <form id="serialForm" autocomplete="off">
+        <input id="serialInput" placeholder="REG:1 | 1 | LOCK | UNLOCK_ADMIN">
+        <button class="btn" type="submit">Kirim</button>
+      </form>
+      <div class="chips">
+        <button class="chip" data-cmd="1">1</button>
+        <button class="chip" data-cmd="LOCK">LOCK</button>
+        <button class="chip" data-cmd="UNLOCK_ADMIN">UNLOCK_ADMIN</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- RIWAYAT -->
+  <section class="card history">
+    <div class="hist-head">
+      <h2>Riwayat Akses</h2>
+      <div>
+        <button class="btn small" id="exportBtn">Ekspor CSV</button>
+        <button class="btn small danger" id="clearBtn">Hapus Riwayat</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>Waktu</th><th>Kejadian</th><th>Detail</th><th>Status</th></tr></thead>
+        <tbody id="histBody"></tbody>
+      </table>
+      <div class="empty-hist" id="emptyHist">Belum ada riwayat.</div>
+    </div>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>
